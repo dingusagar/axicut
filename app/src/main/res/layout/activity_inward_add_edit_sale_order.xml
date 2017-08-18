@@ -61,6 +61,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="50dp"
                     android:id="@+id/workorderRecyclerview"
                     android:background="@color/grey_background"/>
 
@@ -112,7 +113,6 @@
             android:layout_height="wrap_content"
             android:text="Confirm Entry"
             android:id="@+id/confirmButton"
-            android:enabled="false"
             android:background="@color/colorPrimary"
             android:textColor="@color/primary_light"
             android:layout_alignParentBottom="true"

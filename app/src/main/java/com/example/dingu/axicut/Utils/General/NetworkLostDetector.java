@@ -17,21 +17,24 @@ import com.google.firebase.database.ValueEventListener;
 
 public class NetworkLostDetector {
 
-    DatabaseReference connectedRef;
-    Snackbar snackbar;
-    View parentView;
-    Activity activity;
-    Boolean connected = true;
+    private DatabaseReference connectedRef;
+    private Snackbar snackbar;
+    private View parentView;
+    private Boolean connected = true;
+    private int datasnapshotCounter = 0; // to avoid "connected" message for the first time
+
     public NetworkLostDetector(final int parentLayoutId, Activity activity) {
-        this.activity = activity;
-         parentView = activity.findViewById(parentLayoutId);
+
+        parentView = activity.findViewById(parentLayoutId);
         connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot snapshot) {
                  connected = snapshot.getValue(Boolean.class);
+                datasnapshotCounter++;
+
                 if (!connected) {
-                    snackbar = Snackbar.make(parentView, "Internet Connection Lost", Snackbar.LENGTH_INDEFINITE);
+                    snackbar = Snackbar.make(parentView, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
                     snackbar.setAction("Okay", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -39,7 +42,7 @@ public class NetworkLostDetector {
                         }
                     });
                     snackbar.show();
-                } else
+                } else if(connected && datasnapshotCounter > 1)
                 {
 
                     if(snackbar != null){

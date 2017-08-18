@@ -1,7 +1,6 @@
 package com.example.dingu.axicut.Admin.Materials;
 
 import android.app.ProgressDialog;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.dingu.axicut.R;
-import com.example.dingu.axicut.Utils.General.ButtonAnimator;
 import com.example.dingu.axicut.Utils.General.MyDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,7 +50,7 @@ public class AdminAddMaterials extends AppCompatActivity {
         DatabaseReference dbRootRef= MyDatabase.getDatabase().getInstance().getReference();
         Map<String, Object> update = new HashMap<>();
         String materialDesc = desc.getText().toString().trim();
-        String materialId = id.getText().toString().trim();
+        final String materialId = id.getText().toString().trim();
         if(materialDesc!=null && materialId!=null) {
             Material material = new Material(materialDesc, materialId);
             update.put("Material/"+material.getId(),material);
@@ -62,19 +61,19 @@ public class AdminAddMaterials extends AppCompatActivity {
                     if(task.isSuccessful())
                     {
                         progress.dismiss();
-                        Snackbar.make(findViewById(android.R.id.content),"Successfully Saved Data ", Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
+                        Toast.makeText(getApplicationContext(), "Added new Material :"+ materialId ,Toast.LENGTH_SHORT).show();
+                        onBackPressed();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progress.dismiss();
-                    Snackbar.make(findViewById(android.R.id.content),"ERROR : " + e.toString(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    Toast.makeText(getApplicationContext(), "Error adding : "+e.toString(),Toast.LENGTH_LONG).show();
+                    onBackPressed();
                 }
             });
-            onBackPressed();
+
         }
     }
 }

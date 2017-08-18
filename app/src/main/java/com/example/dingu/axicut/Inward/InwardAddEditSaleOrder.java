@@ -2,14 +2,11 @@ package com.example.dingu.axicut.Inward;
 
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,10 +23,11 @@ import android.widget.Toast;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.example.dingu.axicut.R;
 import com.example.dingu.axicut.SaleOrder;
-import com.example.dingu.axicut.Utils.General.ButtonAnimator;
+import com.example.dingu.axicut.Utils.Effects.MyVibrator;
+import com.example.dingu.axicut.Utils.Effects.ButtonAnimator;
 import com.example.dingu.axicut.Utils.General.MyDatabase;
 import com.example.dingu.axicut.Utils.General.NetworkLostDetector;
-import com.example.dingu.axicut.WorkOrder;
+import com.example.dingu.axicut.Utils.General.QuickDataFetcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -40,7 +38,6 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,8 +67,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
     Calendar calendar;
     ImageButton dateButton , timeButton;
 
-    Vibrator vibrator;
-    int VIBRATE_DURATION = 100;
+    MyVibrator myVibrator;
 
     TextView workOrderListEmptyMessage;
     InwardAction inwardAction;
@@ -81,7 +77,9 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inward_add_edit_sale_order);
+
         networkLostDetector = new NetworkLostDetector(android.R.id.content,this);
+        myVibrator = new MyVibrator(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -111,7 +109,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
         dateButton = (ImageButton)findViewById(R.id.dateButton) ;
         timeButton = (ImageButton)findViewById(R.id.timeButton) ;
         customerID_Spinner = (Spinner) findViewById(R.id.customerID);
-        customerID_Spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,InwardUtilities.getCustomerIDs()));
+        customerID_Spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item, QuickDataFetcher.getCustomerIDs()));
         customerDCText = (TextView)findViewById(R.id.customerDC);
         saleOrderNumberText = (TextView)findViewById(R.id.saleOrderNum);
 
@@ -160,7 +158,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
         });
 
 
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         confirmButton = (Button)findViewById(R.id.confirmButton);
         ButtonAnimator.setEffect(confirmButton, ButtonAnimator.Effects.REVERSE_BACKGROUND_FOREGROUND);
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -176,8 +174,6 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
         if(inwardAction.equals(InwardAction.EDIT_SALE_ORDER))
         {
             saleOrder = (SaleOrder) getIntent().getSerializableExtra("SaleOrder");
-            confirmButton.setEnabled(true);
-            confirmButton.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.button_enabled_text_color));
         }
         else if(inwardAction.equals(InwardAction.CREATE_NEW_SALE_ORDER))
         {
@@ -203,8 +199,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
 
 
     private void confirmButtonAction(View view) {
-        vibrator.vibrate(VIBRATE_DURATION);
-        final Button button = (Button)view;
+        myVibrator.vibrate();
         new AlertDialog.Builder(InwardAddEditSaleOrder.this)
                 .setTitle("Confirm Entry")
                 .setMessage("Do you want to save the changes ?")
@@ -212,19 +207,10 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if (button.isEnabled()) {
-                            button.setEnabled(false);
-                            button.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.button_disabled_text_color));
-                        }
                         UpdateSaleOrderObject();
                         writeBackOnDatabase();
                     }})
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        confirmButton.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.button_enabled_text_color));
-                    }
-                }).show();
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     private SaleOrder setUpNewSaleOrder() {
@@ -242,8 +228,6 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
                     saleOrder.invalidateSaleOrderNumber(serverTimeStamp,lastSaleOrderNumber);
                     saleOrder.setTimestamp(serverTimeStamp);
                     saleOrderNumberText.setText(saleOrder.getSaleOrderNumber());
-                    confirmButton.setEnabled(true);
-                    confirmButton.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.button_enabled_text_color));
                 }
             }
 
@@ -281,6 +265,9 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
 
     public void writeBackOnDatabase()
     {
+        if(!checkMandatoryFields())
+            return;
+
         // everything is ready to be added to the database
 
         progress.setMessage("Adding new Sale Order...");
@@ -307,7 +294,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
                         progress.dismiss();
                         Snackbar.make(parentLayout,"Successfully Saved Data ", Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();
-                        goBackToPreviousActivity.start();
+
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -326,6 +313,38 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
         }
 
 
+    }
+
+    private boolean checkMandatoryFields() {
+        StringBuffer errorMessage = new StringBuffer("");
+        boolean isError = false;
+        if(saleOrder.getCustomerDC() == null || saleOrder.getCustomerDC().equals(""))
+        {
+            errorMessage.append("-> Customer DC Number cannot be empty").append("\n");
+            isError = true;
+        }
+
+        if(saleOrder.getSaleOrderNumber() == null || saleOrder.getSaleOrderNumber().equals(""))
+        {
+            errorMessage.append("-> SaleOrder Number Error. Check Internet connection").append("\n");
+            isError = true;
+        }
+
+
+        if(isError)
+        {
+            final Snackbar snackbar = Snackbar.make(parentLayout, errorMessage ,Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("Okay", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
+            return false;
+        }
+
+        return true;
     }
 
     private void InvalidateViews() {
@@ -364,18 +383,7 @@ public class InwardAddEditSaleOrder extends AppCompatActivity {
         return saleOrder;
     }
 
-    // Thread to wait till the Toast Message to disappear
-    Thread goBackToPreviousActivity = new Thread(){
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(3000); // As I am using LENGTH_LONG in Toast
-                InwardAddEditSaleOrder.this.finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
+
 
 
 }

@@ -194,22 +194,3 @@ public class LotNumberAdapter extends RecyclerView.Adapter<LotNumberViewHolder> 
 }
 
 
-
-
-// for editing
-//
-//    private void replaceAndNotify(Material updatedMaterial) {
-//
-//        String materialID = updatedMaterial.getMaterialId();
-//
-//        for(int i=0; i<materialList.size();i++)
-//        {
-//            if(materialList.get(i).getMaterialId().equals(materialID))
-//            {
-//                materialList.set(i,updatedMaterial);
-//                filteredMaterialList = materialList;
-//                notifyDataSetChanged();
-//                break;
-//            }
-//        }
-//    }
