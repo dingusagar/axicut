@@ -1,10 +1,12 @@
 package com.example.dingu.axicut.Admin.Materials;
 
+import java.io.Serializable;
+
 /**
  * Created by root on 14/5/17.
  */
 
-public class Material {
+public class Material implements Serializable {
     public Material(){}
     public Material(String desc,String id){
         this.desc=desc;

@@ -1,5 +1,6 @@
 package com.example.dingu.axicut.Admin.Company;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,7 +44,6 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyViewHolder> impl
     @Override
     public CompanyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.company_card_view,parent,false);
-
         return new CompanyViewHolder(view);
     }
 
@@ -52,8 +52,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyViewHolder> impl
 
         final Company company = filteredCompanyList.get(position);
         holder.setCompanyId(company.getCompanyId());
-        holder.setCompanyName(company.getComapanyName());
-
+        holder.setCompanyName(company.getCompanyName());
         ImageButton removeButton = (ImageButton) holder.mView.findViewById(R.id.CompanyRemoveButton);
 
         removeButton.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +62,15 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyViewHolder> impl
                 dbRefQuick.child(company.getCompanyId()).removeValue();
             }
         });
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(),AdminAddCompany.class);
+                    intent.putExtra("Company",company);
+                    v.getContext().startActivity(intent);
 
+            }
+        });
 
 
     }
@@ -87,7 +94,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyViewHolder> impl
                     ArrayList<Company> filterlist = new ArrayList<>();
                     for(Company company : companyList)
                     {
-                        String concat = company.getComapanyName() +" " + company.getCompanyId();
+                        String concat = company.getCompanyName() +" " + company.getCompanyId();
                         concat = concat.toLowerCase();
                         if(concat.contains(searchKey.toLowerCase()))
                             filterlist.add(company);
@@ -189,6 +196,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyViewHolder> impl
         notifyDataSetChanged();
 
     }
+
 
 
 }

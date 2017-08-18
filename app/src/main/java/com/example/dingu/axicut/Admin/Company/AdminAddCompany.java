@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdminAddCompany extends AppCompatActivity {
-    private DatabaseReference dbRef , dbRefQuickAccess;
+    private DatabaseReference dbRef,dbRefQuickAccess;
     private EditText companyNameText,companyDescText;
     private EditText companyIdText;
     private Button addComapanyButton;
@@ -61,6 +61,10 @@ public class AdminAddCompany extends AppCompatActivity {
         if(companyAddRules(company)) {
             progress.setMessage("Adding new Company......");
             progress.show();
+            if(companyToBeEdited!=null){
+                dbRef.child(companyToBeEdited.getCompanyId()).removeValue();
+                dbRefQuickAccess.child(companyToBeEdited.getCompanyId()).removeValue();
+            }
             update.put("Company/"+company.getCompanyId(),company);
             update.put("InwardUtilities/customerIDs/"+companyId,true);
 //            dbRef.child(company.getCompanyId()).setValue(company);

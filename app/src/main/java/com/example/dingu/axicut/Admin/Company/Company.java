@@ -1,27 +1,37 @@
 package com.example.dingu.axicut.Admin.Company;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by root on 14/5/17.
  */
 
-public class Company {
-    private String comapanyName;
+public class Company implements Serializable{
+    private String companyName;
     private String companyId;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Company(){}
     public Company(String name,String ID){
-        this.comapanyName=name;
+        this.companyName=name;
         this.companyId=ID;
     }
 
-    public String getComapanyName() {
-        return comapanyName;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setComapanyName(String comapanyName) {
-        this.comapanyName = comapanyName;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public String getCompanyId() {

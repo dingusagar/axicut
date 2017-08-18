@@ -1,5 +1,6 @@
 package com.example.dingu.axicut.Admin.Materials;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
 
+import com.example.dingu.axicut.Admin.Company.AdminAddCompany;
 import com.example.dingu.axicut.Admin.Materials.Material;
 import com.example.dingu.axicut.Admin.Materials.MaterialViewHolder;
 import com.example.dingu.axicut.R;
@@ -66,6 +68,14 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialViewHolder> im
             }
         });
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(),AdminAddMaterials.class);
+                intent.putExtra("Material",material);
+                v.getContext().startActivity(intent);
+            }
+        });
 
 
     }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.dingu.axicut.Admin.Company.Company;
 import com.example.dingu.axicut.R;
 import com.example.dingu.axicut.Utils.General.MyDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,13 +26,18 @@ public class AdminAddMaterials extends AppCompatActivity {
     private EditText desc;
     private EditText id;
     private Button addMaterial;
+    DatabaseReference dbRef = MyDatabase.getDatabase().getInstance().getReference().child("Material");
+    DatabaseReference dbRefQuick = MyDatabase.getDatabase().getInstance().getReference().child("InwardUtilities").child("materialTypes");
+
     private DatabaseReference materialRef= FirebaseDatabase.getInstance().getReference().child("Material");
     private DatabaseReference materialRefQuickAccess= FirebaseDatabase.getInstance().getReference().child("InwardUtilities").child("materialTypes");
     private ProgressDialog progress;
+    private Material materialToBeEdited;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_add_materials);
+        materialToBeEdited = (Material) getIntent().getSerializableExtra("Material");
         desc=(EditText)findViewById(R.id.MaterialName);
         id=(EditText)findViewById(R.id.MaterialId);
         addMaterial=(Button)findViewById(R.id.AddMaterial);
@@ -42,17 +48,22 @@ public class AdminAddMaterials extends AppCompatActivity {
                 addMaterial();
             }
         });
+        if(materialToBeEdited!=null)showInfoToBeEdited(materialToBeEdited);
     }
 
     public void addMaterial(){
-        progress.setMessage("Adding new Material......");
-        progress.show();
         DatabaseReference dbRootRef= MyDatabase.getDatabase().getInstance().getReference();
         Map<String, Object> update = new HashMap<>();
         String materialDesc = desc.getText().toString().trim();
         final String materialId = id.getText().toString().trim();
-        if(materialDesc!=null && materialId!=null) {
-            Material material = new Material(materialDesc, materialId);
+        Material material = new Material(materialDesc, materialId);
+        if(materialAddRules(material)) {
+            progress.setMessage("Adding new Material......");
+            progress.show();
+            if(materialToBeEdited!=null){
+                dbRef.child(materialToBeEdited.getId()).removeValue();
+                dbRefQuick.child(materialToBeEdited.getId()).removeValue();
+            }
             update.put("Material/"+material.getId(),material);
             update.put("InwardUtilities/materialTypes/" + material.getId(),true);
             dbRootRef.updateChildren(update).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -75,5 +86,20 @@ public class AdminAddMaterials extends AppCompatActivity {
             });
 
         }
+        else {
+            Toast.makeText(getApplicationContext(),"Material ID and name are mandatory",Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void showInfoToBeEdited(Material material){
+        id.setText(material.getId());
+        desc.setText(material.getDesc());
+
+    }
+
+    private boolean materialAddRules(Material material){
+        if(material.getId()!=null && !material.getId().equals(""))
+            if(material.getDesc()!=null && !material.getDesc().equals(""))
+                return true;
+        return false;
     }
 }
