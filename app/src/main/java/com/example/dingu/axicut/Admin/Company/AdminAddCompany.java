@@ -24,19 +24,21 @@ import java.util.Map;
 
 public class AdminAddCompany extends AppCompatActivity {
     private DatabaseReference dbRef , dbRefQuickAccess;
-    private EditText companyNameText;
+    private EditText companyNameText,companyDescText;
     private EditText companyIdText;
     private Button addComapanyButton;
     private ProgressDialog progress;
-
+    private  Company companyToBeEdited;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_add_company);
+        companyToBeEdited = (Company) getIntent().getSerializableExtra("Company");
         dbRef = FirebaseDatabase.getInstance().getReference().child("Company");
         dbRefQuickAccess = FirebaseDatabase.getInstance().getReference().child("InwardUtilities").child("customerIDs");
         companyNameText = (EditText) findViewById(R.id.CompanyName);
-        companyIdText = (EditText) findViewById(R.id.ComapanyId);
+        companyIdText = (EditText) findViewById(R.id.CompanyId);
+        companyDescText=(EditText)findViewById(R.id.CompanyDesc);
         addComapanyButton = (Button) findViewById(R.id.AddCompany);
         progress = new ProgressDialog(this);
         addComapanyButton.setOnClickListener(new View.OnClickListener() {
@@ -45,17 +47,20 @@ public class AdminAddCompany extends AppCompatActivity {
                 addCompanyToDatabase();
             }
         });
+        if(companyToBeEdited!=null)showInfoToBeEdited(companyToBeEdited);
 
     }
     public void addCompanyToDatabase(){
-        progress.setMessage("Adding new Company......");
-        progress.show();
         DatabaseReference dbRootRef= MyDatabase.getDatabase().getInstance().getReference();
         Map<String, Object> update = new HashMap<>();
         String companyName =companyNameText.getText().toString().trim();
         final String companyId = companyIdText.getText().toString().trim();
+        String companyDesc = companyDescText.getText().toString().trim();
         final Company company = new Company(companyName,companyId);
-        if(companyName!=null && companyId !=null) {
+        company.setDescription(companyDesc);
+        if(companyAddRules(company)) {
+            progress.setMessage("Adding new Company......");
+            progress.show();
             update.put("Company/"+company.getCompanyId(),company);
             update.put("InwardUtilities/customerIDs/"+companyId,true);
 //            dbRef.child(company.getCompanyId()).setValue(company);
@@ -79,5 +84,25 @@ public class AdminAddCompany extends AppCompatActivity {
                 }
             });
         }
+        else{
+            Toast.makeText(getApplicationContext(), "Company name and ID are mandatory !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showInfoToBeEdited(Company company){
+        if(company.getCompanyId()!=null)
+            companyIdText.setText(company.getCompanyId().toString().trim());
+        if(company.getCompanyName()!=null)
+            companyNameText.setText(company.getCompanyName().toString().trim());
+        if(company.getCompanyName()!=null)
+            companyDescText.setText(company.getDescription().toString().trim());
+
+    }
+
+    private boolean companyAddRules(Company company){
+        if(company.getCompanyId()!=null && !company.getCompanyId().equals(""))
+            if(company.getCompanyName()!=null && !company.getCompanyName().equals(""))
+                return true;
+        return false;
     }
 }
