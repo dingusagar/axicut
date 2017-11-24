@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/clearSelection"
+        android:icon="@mipmap/uncheck_box"
+        android:title=""
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
         android:id="@+id/RangeSelection"
         android:icon="@mipmap/check"
         android:title=""

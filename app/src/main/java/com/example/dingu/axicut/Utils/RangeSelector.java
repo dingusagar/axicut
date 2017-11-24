@@ -92,6 +92,10 @@ public class RangeSelector {
         return selectedItems;
     }
 
+    public void clearSelections(){
+        selectedItems.clear();
+    }
+
     private boolean isbetweenRange(WorkOrder workOrder){
         int num = (int)Math.floor(Float.parseFloat(workOrder.getWorkOrderNumber()));
         return num >= from && num <= to;

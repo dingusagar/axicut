@@ -45,7 +45,7 @@ public class ProductionWorkOrder extends AppCompatActivity implements RecyclerVi
         timeTakenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog dialog = new TimePickerDialog(ProductionWorkOrder.this,rangeSelector.getSelectedItems(),saleOrder,ProductionWorkOrder.this);
+                TimePickerDialog dialog = new TimePickerDialog(ProductionWorkOrder.this,rangeSelector.getSelectedItems(),saleOrder,ProductionWorkOrder.this,rangeSelector);
                 dialog.showDialog();
             }
         });
@@ -74,6 +74,9 @@ public class ProductionWorkOrder extends AppCompatActivity implements RecyclerVi
                 rangeSelector.setupDialog();
                 rangeSelector.showDialog();
                 break;
+            case R.id.clearSelection:
+                rangeSelector.clearSelections();
+                workOrderAdapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
     }

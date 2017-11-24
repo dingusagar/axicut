@@ -56,6 +56,7 @@ public class EditDesignLayout extends DialogFragment {
                 EditText designLayout = (EditText) getView().findViewById(R.id.designLayoutEditText);
                 communicator.adapterNotify(designLayout.getText().toString());
                 communicator.updateWorkOrderLayoutToDatabase(designLayout.getText().toString());
+                communicator.clearAll();
                 dismiss();
             }
         });

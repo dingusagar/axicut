@@ -14,6 +14,7 @@ import com.example.dingu.axicut.Inward.MyCustomDialog;
 import com.example.dingu.axicut.R;
 import com.example.dingu.axicut.SaleOrder;
 import com.example.dingu.axicut.Utils.General.MyDatabase;
+import com.example.dingu.axicut.Utils.RangeSelector;
 import com.example.dingu.axicut.Utils.RecyclerViewRefresher;
 import com.example.dingu.axicut.WorkOrder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,13 +43,15 @@ public class TimePickerDialog implements MyCustomDialog {
     View contentView;
     RecyclerViewRefresher recyclerViewRefresher;
     HashMap<String,Boolean> selectedItems;
+    private RangeSelector rangeSelector;
 
-    public TimePickerDialog(Context context, HashMap<String,Boolean> selectedItems, SaleOrder saleOrder, RecyclerViewRefresher recyclerViewRefresher) {
+    public TimePickerDialog(Context context, HashMap<String,Boolean> selectedItems, SaleOrder saleOrder, RecyclerViewRefresher recyclerViewRefresher, RangeSelector rangeSelector) {
         this.context = context;
         this.saleOrder=saleOrder;
         this.recyclerViewRefresher=recyclerViewRefresher;
         saleOrderRef= MyDatabase.getDatabase().getReference().child("Orders").child(saleOrder.getSaleOrderNumber());
         this.selectedItems = selectedItems;
+        this.rangeSelector=rangeSelector;
         setupDialog();
     }
 
@@ -112,6 +115,7 @@ public class TimePickerDialog implements MyCustomDialog {
                 upDateDB(wo,durationPerWO);
             }
         }
+        rangeSelector.clearSelections();
         recyclerViewRefresher.refreshRecyclerView();
     }
 

@@ -77,7 +77,12 @@ public class DesignWorkOrder extends AppCompatActivity implements RecyclerViewRe
                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Orders").child(saleOrder.getSaleOrderNumber());
                 syncValidWorkOrdersToArrayList();
                 dbRef.setValue(saleOrder);
+            }
 
+            @Override
+            public void clearAll() {
+                rangeSelector.clearSelections();
+                workOrderAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -114,6 +119,9 @@ public class DesignWorkOrder extends AppCompatActivity implements RecyclerViewRe
                 rangeSelector.setupDialog();
                 rangeSelector.showDialog();
                 break;
+            case R.id.clearSelection:
+                rangeSelector.clearSelections();
+                workOrderAdapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
     }
