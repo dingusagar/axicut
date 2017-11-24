@@ -47,11 +47,11 @@ public class AddLotNum extends AppCompatActivity {
 
     public void addLotNum(){
         final String lotNum = lotNumId.getText().toString().trim();
-        progressDialog.setMessage("Adding new Lot number......");
-        progressDialog.show();
         DatabaseReference dbRootRef= MyDatabase.getDatabase().getInstance().getReference();
         Map<String, Object> update = new HashMap<>();
-        if(lotNum!=null) {
+        if(lotNum!=null && !lotNum.equals("")) {
+            progressDialog.setMessage("Adding new Lot number......");
+            progressDialog.show();
             LotNumber lotNumber = new LotNumber(lotNum);
             update.put("Lot Numbers/"+lotNumber.getLotNum(),lotNumber);
             update.put("InwardUtilities/lotNumberTypes/"+lotNumber.getLotNum(),true);
@@ -74,6 +74,8 @@ public class AddLotNum extends AppCompatActivity {
                 }
             });
 
+        }else {
+            Toast.makeText(getApplicationContext(),"Please specifiy a valid lot number",Toast.LENGTH_SHORT).show();
         }
     }
 }

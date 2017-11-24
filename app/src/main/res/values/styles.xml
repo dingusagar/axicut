@@ -14,6 +14,12 @@
     <!--<item name="android:windowDisablePreview">true</item>-->
 
     <!--</style>-->
+    <style name="splashScreenAptTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen" >
+        <item name="android:windowDisablePreview">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        </style>
     <style name="myTheme" parent="android:Theme.Holo.NoActionBar.Fullscreen" />
 
     <style name="AppTheme.NoActionBar">
