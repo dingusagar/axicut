@@ -88,6 +88,7 @@ public class WorkOrderAdapter extends RecyclerView.Adapter<WorkOrderAdapter.View
                             public void adapterNotify() {
                                 notifyDataSetChanged();
                             }
+
                         };
                         bundle.putSerializable("Communicator",communicator);
                         dialogFrag.setArguments(bundle);
