@@ -111,7 +111,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm Entry"
+            android:text="SAVE CHANGES"
             android:id="@+id/confirmButton"
             android:background="@color/colorPrimary"
             android:textColor="@color/primary_light"
