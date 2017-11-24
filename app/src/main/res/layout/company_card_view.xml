@@ -9,46 +9,50 @@
     android:layout_gravity="center"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_centerInParent="true"
-            android:layout_alignParentLeft="true"
             android:id="@+id/CompanyName"
+            style="@style/adminFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="10dp"
             android:gravity="center"
-            android:text="Company Name"
-            android:textSize="25sp"
-            android:textColor="@color/admin_text_color"
-            style="@style/adminFont"
-            android:textStyle="bold"
             android:padding="10dp"
-            android:layout_margin="10dp"/>
+            android:text="Company Name"
+            android:textColor="@color/admin_text_color"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/CompanyName"
-            android:padding="10dp"
-            android:layout_margin="10dp"
             android:id="@+id/CompanyId"
+            style="@style/adminFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/CompanyName"
+            android:layout_margin="10dp"
             android:gravity="center"
+            android:padding="10dp"
             android:text="Company ID"
-            android:textSize="25sp"
             android:textColor="@color/admin_text_color"
-            style="@style/adminFont"
+            android:textSize="25sp"
             android:textStyle="bold" />
+
         <ImageButton
             android:id="@+id/CompanyRemoveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/delete"
             android:background="#ffffff"
-            android:layout_alignParentBottom="true"
+            android:src="@drawable/delete"
+            android:layout_marginRight="17dp"
+            android:layout_marginEnd="17dp"
+            android:layout_alignTop="@+id/CompanyId"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
