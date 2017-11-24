@@ -114,14 +114,14 @@ public class InwardWorkOrderAdapter extends RecyclerView.Adapter<InwardWorkOrder
                 @Override
                 public void onClick(View v) {
                     WorkOrder workOrder = workOrdersList.get(getAdapterPosition());
-                    if(workOrder.getLayoutName() == null || workOrder.getLayoutName().equals(""))
+                    if(workOrder.getProdTime() == null || workOrder.getProdTime().equals(""))
                     {
                         workOrdersList.remove(getAdapterPosition());
                         notifyItemRemoved(getAdapterPosition());
                         notifyItemRangeChanged(getAdapterPosition(),workOrdersList.size());
                     }else
                     {
-                        Toast.makeText(context,"Cannot Delete this \n Layout already assigned ",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"Cannot Delete this \n Production already done ! ",Toast.LENGTH_LONG).show();
                     }
 
                 }
