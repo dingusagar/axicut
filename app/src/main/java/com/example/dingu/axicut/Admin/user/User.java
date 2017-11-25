@@ -13,6 +13,7 @@ public class User {
         this.email = email;
         this.name = name;
         this.userMode = userMode;
+        this.isActive=true;
     }
 
     private String email;

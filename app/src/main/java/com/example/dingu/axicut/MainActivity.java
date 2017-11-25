@@ -2,6 +2,7 @@ package com.example.dingu.axicut;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ObbInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -91,7 +92,16 @@ public class MainActivity extends Activity {
 
                 if(dataSnapshot.hasChild(userID)) { // only if the user is present in the db
                     // getting the string userMode in DB to enum userMode
-                   UserMode userMode = UserMode.valueOf(dataSnapshot.child(userID).child("userMode").getValue().toString());
+                    User user =(User)dataSnapshot.child(userID).getValue(User.class);
+                   UserMode userMode = UserMode.valueOf(user.getUserMode().toString());
+                    boolean isActive = user.isActive();
+                    if(!isActive){
+                        Toast.makeText(getApplicationContext(),"Your account is disabled. Please contact admin..",Toast.LENGTH_LONG).show();
+                        mAuth.signOut();
+                        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(loginIntent);
+                        return;
+                    }
                     Log.e("app", "user mode : "+ userMode);
                     Intent intent;
                     switch (userMode) {

@@ -1,16 +1,20 @@
 package com.example.dingu.axicut.Admin.user;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 
@@ -34,7 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
     ArrayList<User> userList;
 
     DatabaseReference dbRef = MyDatabase.getDatabase().getInstance().getReference().child("Users");
-
+    Boolean isTouched = false;
 
     public UserAdapter() {
         dbRef.keepSynced(true);
@@ -58,8 +62,38 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
         holder.setUserEmail(user.getEmail());
         holder.setName(user.getName());
         holder.setMode(user.getUserMode());
-
+        holder.setSwitchStatus(user.isActive());
         ImageButton removeButton = (ImageButton) holder.mView.findViewById(R.id.UserRemoveButton);
+        Switch isActiveSwitch = (Switch)holder.mView.findViewById(R.id.isActiveSwitch);
+
+        isActiveSwitch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                isTouched = true;
+                return false;
+            }
+        });
+
+        isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isTouched) {
+                    isTouched = false;
+                    user.setActive(isChecked);
+                    ProgressDialog progressDialog = new ProgressDialog(buttonView.getContext());
+                    if(isChecked)
+                        progressDialog.setMessage("Enabling User...");
+                    else
+                        progressDialog.setMessage("Disabling User...");
+                    progressDialog.show();
+                    updateUser(user);
+                    progressDialog.dismiss();
+                }
+            }
+        });
+
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,26 +255,25 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
 
     }
 
+    private void updateUser(final User user){
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null)
+                {
+                    for(DataSnapshot childSnapshot : dataSnapshot.getChildren())
+                    {
+                        User userDb = childSnapshot.getValue(User.class);
+                        if(userDb.getEmail() != null && userDb.getEmail().equals(user.getEmail()))
+                            childSnapshot.getRef().setValue(user);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
-
-
-
-
-// for editing
-//
-//    private void replaceAndNotify(User updatedUser) {
-//
-//        String userID = updatedUser.getUserId();
-//
-//        for(int i=0; i<userList.size();i++)
-//        {
-//            if(userList.get(i).getUserId().equals(userID))
-//            {
-//                userList.set(i,updatedUser);
-//                filteredUserList = userList;
-//                notifyDataSetChanged();
-//                break;
-//            }
-//        }
-//    }

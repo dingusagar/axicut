@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.dingu.axicut.R;
@@ -18,12 +19,14 @@ public class UserViewHolder extends RecyclerView.ViewHolder{
     private TextView userName;
     private TextView userMode;
     private TextView userEmail;
+    private Switch isActiveSwitch;
     public UserViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
         userName=(TextView)mView.findViewById(R.id.UserName);
         userMode=(TextView)mView.findViewById(R.id.UserMode);
         userEmail=(TextView)mView.findViewById(R.id.UserEmail);
+        isActiveSwitch = (Switch)mView.findViewById(R.id.isActiveSwitch);
 
     }
     public void setName(String name){
@@ -39,5 +42,8 @@ public class UserViewHolder extends RecyclerView.ViewHolder{
 
     public void setUserEmail(String email){
         userEmail.setText(email);
+    }
+    public void setSwitchStatus(boolean isActive){
+        isActiveSwitch.setChecked(isActive);
     }
 }
