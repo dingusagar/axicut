@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dingu.axicut.Admin.user.User;
 import com.example.dingu.axicut.Design.DesignMainActivity;
 import com.example.dingu.axicut.Inward.InwardMainActivity;
 import com.example.dingu.axicut.Production.ProductionActivity;
@@ -93,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkAndLogin();
+               checkAndLogin();
             }
         });
 
@@ -182,7 +183,15 @@ public class LoginActivity extends AppCompatActivity {
 
                if(dataSnapshot.hasChild(userID)) { // only if the user is present in the db
                    // getting the string userMode in DB to enum userMode
-                   userMode = UserMode.valueOf(dataSnapshot.child(userID).child("userMode").getValue().toString());
+                   User user =dataSnapshot.child(userID).getValue(User.class);
+                   userMode = user.getUserMode();
+                   boolean isActive = user.isActive();
+                   if(!isActive){
+                       Toast.makeText(getApplicationContext(),"Your account is disabled. Please contact admin..",Toast.LENGTH_LONG).show();
+                       progressBar.setVisibility(View.INVISIBLE);
+                       progressMessage.setText("");
+                       return;
+                   }
                    Intent intent;
                    switch (userMode) {
                        case INWARD:

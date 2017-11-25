@@ -13,11 +13,22 @@ public class User {
         this.email = email;
         this.name = name;
         this.userMode = userMode;
+        this.isActive=true;
     }
 
     private String email;
     private String name;
     private UserMode userMode;
+    private boolean isActive;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public String getEmail() {
         return email;
     }

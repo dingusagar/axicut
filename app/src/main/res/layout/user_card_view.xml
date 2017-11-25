@@ -12,16 +12,17 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="186dp">
 
         <TextView
             android:id="@+id/UserName"
             style="@style/adminFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="10dp"
+            android:layout_alignLeft="@+id/UserEmail"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/UserEmail"
+            android:layout_marginTop="28dp"
             android:gravity="center"
             android:padding="10dp"
             android:text="Deepak"
@@ -34,10 +35,11 @@
             style="@style/adminFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/UserEmail"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="10dp"
+            android:layout_marginEnd="13dp"
+            android:layout_marginRight="13dp"
             android:gravity="center"
             android:padding="10dp"
             android:text="Admin"
@@ -64,11 +66,36 @@
             android:id="@+id/UserRemoveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:src="@drawable/delete"
             android:layout_alignBottom="@+id/UserEmail"
+            android:layout_alignEnd="@+id/UserMode"
             android:layout_alignRight="@+id/UserMode"
-            android:layout_alignEnd="@+id/UserMode" />
+            android:background="#ffffff"
+            android:src="@drawable/delete" />
+
+        <TextView
+            android:id="@+id/userModeText"
+            style="@style/adminFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/UserEmail"
+            android:ems="20"
+            android:text="User Mode"
+            android:textColor="@color/admin_text_color"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignRight="@+id/UserRemoveButton"
+            android:layout_alignEnd="@+id/UserRemoveButton"
+            android:layout_alignLeft="@+id/UserEmail"
+            android:layout_alignStart="@+id/UserEmail" />
+
+        <Switch
+            android:id="@+id/isActiveSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/userModeText"
+            android:text="" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
