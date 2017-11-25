@@ -109,7 +109,7 @@ public class DoDespatch implements MyCustomDialog {
             }
 
         }
-        refresher.refreshRecyclerView();
+
 
         for(int i =0;i<workOrders.size() ;i++)
         {
@@ -121,6 +121,9 @@ public class DoDespatch implements MyCustomDialog {
             }
 
         }
+
+        selectedItems.clear(); // this clears all tick marks in recycler view once the positive button is pressed
+        refresher.refreshRecyclerView();
 
 
 

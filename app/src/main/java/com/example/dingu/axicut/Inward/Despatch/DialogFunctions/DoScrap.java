@@ -104,7 +104,7 @@ public class DoScrap implements MyCustomDialog {
             }
 
         }
-        refresher.refreshRecyclerView();
+
 
         for(int i =0;i<workOrders.size() ;i++)
         {
@@ -116,6 +116,9 @@ public class DoScrap implements MyCustomDialog {
             }
 
         }
+
+        selectedItems.clear();
+        refresher.refreshRecyclerView();
     }
 
     @Override
