@@ -18,6 +18,16 @@ public class User {
     private String email;
     private String name;
     private UserMode userMode;
+    private boolean isActive;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public String getEmail() {
         return email;
     }
