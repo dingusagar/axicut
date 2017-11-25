@@ -138,6 +138,10 @@ public class DespatchScrapActivity extends AppCompatActivity implements Recycler
                 rangeSelector.showDialog();
                 break;
 
+            case R.id.clearSelection:
+                rangeSelector.clearSelections();
+                despatchWorkOrderAdapter.notifyDataSetChanged();
+
 
         }
 
