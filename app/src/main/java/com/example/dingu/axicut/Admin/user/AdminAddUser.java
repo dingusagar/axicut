@@ -3,6 +3,8 @@ package com.example.dingu.axicut.Admin.user;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.dingu.axicut.R;
@@ -24,8 +27,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class AdminAddUser extends AppCompatActivity {
 
@@ -44,6 +50,7 @@ public class AdminAddUser extends AppCompatActivity {
     private EditText emailField;
     private EditText passwordField;
     Button addUser;
+    RadioGroup usermodRadioGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +66,7 @@ public class AdminAddUser extends AppCompatActivity {
         emailField = (EditText)findViewById(R.id.email);
         passwordField = (EditText)findViewById(R.id.password);
         addUser = (Button)findViewById(R.id.signUp);
+        usermodRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +74,120 @@ public class AdminAddUser extends AppCompatActivity {
 
             }
         });
+
+
+//        if this is a update to an existing user, the intent contains the required values
+       Bundle extras = getIntent().getExtras();
+       if(extras !=null && extras.containsKey(String.valueOf(R.string.existingUser)))
+       {
+           final User existingUser = (User) extras.getSerializable(String.valueOf(R.string.existingUser));
+
+           updateUIFieldsFromBundle(existingUser);
+
+           addUser.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   updateUserDetailsToDB(existingUser);
+               }
+           });
+
+
+       }
+
+    }
+
+    private void updateUserDetailsToDB(final User existingUser) {
+
+        final String username = nameField.getText().toString();
+        final UserMode updatedUserMod;
+
+        switch (usermodRadioGroup.getCheckedRadioButtonId())
+        {
+            case R.id.radio_admin:
+                updatedUserMod = UserMode.ADMIN;
+                break;
+            case R.id.radio_inward:
+                updatedUserMod = UserMode.INWARD;
+                break;
+            case R.id.radio_design:
+                updatedUserMod = UserMode.DESIGN;
+                break;
+            case R.id.radio_production:
+                updatedUserMod = UserMode.PRODUCTION;
+                break;
+            default:
+                updatedUserMod = UserMode.PRODUCTION; // This will never happen
+
+
+        }
+        mdatabaseRefUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot userSnapshot: dataSnapshot.getChildren())
+                {
+                    User user = userSnapshot.getValue(User.class);
+                    if(user.getEmail().equals(existingUser.getEmail()))
+                    {
+                        user.setName(username);
+                        user.setUserMode(updatedUserMod);
+                        final String userID = userSnapshot.getKey();
+                        progress.setMessage("Updating User..");
+                        progress.show();
+                        mdatabaseRefUsers.child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                existingUser.setName(username);
+                                existingUser.setUserMode(updatedUserMod);
+                                progress.dismiss();
+                                Toast.makeText(getApplicationContext(),"Updated user details",Toast.LENGTH_LONG);
+                                onBackPressed();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progress.dismiss();
+                                Toast.makeText(getApplicationContext(),"updating Failed",Toast.LENGTH_LONG);
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void updateUIFieldsFromBundle(User existingUser) {
+
+        emailField.setText(existingUser.getEmail());
+        emailField.setFocusable(false); // should not update email
+        passwordField.setVisibility(View.GONE); // No password filed while updating user
+        nameField.setText(existingUser.getName());
+
+        switch (existingUser.getUserMode())
+        {
+            case INWARD:
+                usermodRadioGroup.check(R.id.radio_inward);
+                break;
+            case DESIGN:
+                usermodRadioGroup.check(R.id.radio_design);
+                break;
+            case PRODUCTION:
+                usermodRadioGroup.check(R.id.radio_production);
+                break;
+            case ADMIN:
+                usermodRadioGroup.check(R.id.radio_admin);
+                break;
+
+
+        }
+        addUser.setText("Update User");
+
+
     }
 
     private void alertAndRegister(View view) {

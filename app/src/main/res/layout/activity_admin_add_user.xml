@@ -58,30 +58,39 @@
         android:layout_alignParentStart="true" />
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_below="@id/password"
-        android:layout_centerHorizontal="true">
-        <RadioButton android:id="@+id/radio_inward"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_inward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="INWARD"
-            android:onClick="onProfileRadioButtonClicked"/>
-        <RadioButton android:id="@+id/radio_design"
+            android:onClick="onProfileRadioButtonClicked"
+            android:text="INWARD" />
+
+        <RadioButton
+            android:id="@+id/radio_design"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DESIGN"
-            android:onClick="onProfileRadioButtonClicked"/>
-        <RadioButton android:id="@+id/radio_production"
+            android:onClick="onProfileRadioButtonClicked"
+            android:text="DESIGN" />
+
+        <RadioButton
+            android:id="@+id/radio_production"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PRODUCTION"
-            android:onClick="onProfileRadioButtonClicked"/>
-        <RadioButton android:id="@+id/radio_admin"
+            android:onClick="onProfileRadioButtonClicked"
+            android:text="PRODUCTION" />
+
+        <RadioButton
+            android:id="@+id/radio_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADMIN"
-            android:onClick="onProfileRadioButtonClicked"/>
+            android:onClick="onProfileRadioButtonClicked"
+            android:text="ADMIN" />
     </RadioGroup>
 </RelativeLayout>

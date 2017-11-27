@@ -63,6 +63,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
         holder.setName(user.getName());
         holder.setMode(user.getUserMode());
         holder.setSwitchStatus(user.isActive());
+        holder.setUpdateUserOnViewTouch(user);
         ImageButton removeButton = (ImageButton) holder.mView.findViewById(R.id.UserRemoveButton);
         Switch isActiveSwitch = (Switch)holder.mView.findViewById(R.id.isActiveSwitch);
 
