@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 import com.example.dingu.axicut.R;
 import com.example.dingu.axicut.UserMode;
 import com.example.dingu.axicut.Utils.General.MyDatabase;
+import com.example.dingu.axicut.Utils.Navigation.Projector;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -81,7 +81,6 @@ public class AdminAddUser extends AppCompatActivity {
        if(extras !=null && extras.containsKey(String.valueOf(R.string.existingUser)))
        {
            final User existingUser = (User) extras.getSerializable(String.valueOf(R.string.existingUser));
-
            updateUIFieldsFromBundle(existingUser);
 
            addUser.setOnClickListener(new View.OnClickListener() {
@@ -128,11 +127,13 @@ public class AdminAddUser extends AppCompatActivity {
                     User user = userSnapshot.getValue(User.class);
                     if(user.getEmail().equals(existingUser.getEmail()))
                     {
+
                         user.setName(username);
                         user.setUserMode(updatedUserMod);
                         final String userID = userSnapshot.getKey();
                         progress.setMessage("Updating User..");
                         progress.show();
+                        mdatabaseRefUsers.child(userID).removeValue();
                         mdatabaseRefUsers.child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
