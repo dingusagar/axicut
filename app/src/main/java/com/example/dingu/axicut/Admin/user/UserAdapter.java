@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +37,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
 
     ArrayList<User> filteredUserList;
     ArrayList<User> userList;
+
 
     DatabaseReference dbRef = MyDatabase.getDatabase().getInstance().getReference().child("Users");
     Boolean isTouched = false;
@@ -63,6 +65,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
         holder.setName(user.getName());
         holder.setMode(user.getUserMode());
         holder.setSwitchStatus(user.isActive());
+        holder.setUpdateUserOnViewTouch(user);
         ImageButton removeButton = (ImageButton) holder.mView.findViewById(R.id.UserRemoveButton);
         Switch isActiveSwitch = (Switch)holder.mView.findViewById(R.id.isActiveSwitch);
 
@@ -204,7 +207,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -276,4 +278,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements
             }
         });
     }
+
+
 }

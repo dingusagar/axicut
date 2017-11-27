@@ -1,5 +1,7 @@
 package com.example.dingu.axicut.Admin.user;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.dingu.axicut.R;
 import com.example.dingu.axicut.UserMode;
+import com.example.dingu.axicut.Utils.Navigation.Projector;
 
 /**
  * Created by grey-hat on 7/5/17.
@@ -45,5 +48,17 @@ public class UserViewHolder extends RecyclerView.ViewHolder{
     }
     public void setSwitchStatus(boolean isActive){
         isActiveSwitch.setChecked(isActive);
+    }
+
+    public void setUpdateUserOnViewTouch(final User user)
+    {
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mView.getContext(),AdminAddUser.class);
+                intent.putExtra(String.valueOf(R.string.existingUser),user);
+                mView.getContext().startActivity(intent);
+            }
+        });
     }
 }

@@ -2,11 +2,13 @@ package com.example.dingu.axicut.Admin.user;
 
 import com.example.dingu.axicut.UserMode;
 
+import java.io.Serializable;
+
 /**
  * Created by grey-hat on 7/5/17.
  */
 
-public class User {
+public class User implements Serializable{
     public User(){}
 
     public User(String email, String name, UserMode userMode) {
